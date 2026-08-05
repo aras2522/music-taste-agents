@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Music Taste Agents</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <main class="shell">
+      <header class="brand">
+        <p class="brand-mark">Music Taste Agents</p>
+        <p class="lede">
+          Two specialists dig Pitchfork and Rate Your Music for
+          <em>similar artists</em> and their albums.
+        </p>
+      </header>
+
+      <form id="taste-form" class="taste-form">
+        <label for="taste">What do you like?</label>
+        <textarea
+          id="taste"
+          name="taste"
+          rows="4"
+          required
+          placeholder="e.g. dreamy bedroom pop, soft indie rock"
+        ></textarea>
+
+        <label for="artists">Seed artists</label>
+        <input
+          id="artists"
+          name="artists"
+          type="text"
+          placeholder="Bad Bunny, Olivia Rodrigo"
+        />
+
+        <div class="row">
+          <label class="limit-label" for="limit">How many</label>
+          <input
+            id="limit"
+            name="limit"
+            type="number"
+            min="1"
+            max="9"
+            step="1"
+            value="5"
+            inputmode="numeric"
+            aria-describedby="limit-hint"
+          />
+          <span id="limit-hint" class="visually-hidden">Enter a number from 1 to 9</span>
+          <button type="submit" id="submit-btn">Find albums</button>
+        </div>
+      </form>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+
+      <section id="results" class="results" hidden>
+        <h2>Recommendations</h2>
+        <p id="shortfall-note" class="shortfall-note" hidden></p>
+        <ol id="rec-list" class="rec-list"></ol>
+
+        <details class="agent-panel">
+          <summary>Agent notes</summary>
+          <div id="agent-notes" class="agent-notes"></div>
+        </details>
+      </section>
+    </main>
+    <script src="/static/app.js?v=20260805-nocache"></script>
+  </body>
+</html>
