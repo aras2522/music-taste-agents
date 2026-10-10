@@ -2,54 +2,75 @@
 
 Hey, this is my music recommender. You tell it what you like (a vibe, a genre, or seed artists like Olivia Rodrigo or Bad Bunny) and it looks for similar artists with real albums.
 
-It uses two agents. One digs through Pitchfork. The other digs through Rate Your Music. Then it merges what they find into one list. Bandcamp is out because those picks were not great.
+It uses two agents. One digs through Pitchfork. The other digs through Rate Your Music. Then it merges what they find into one list.
 
-You can ask for up to 9 albums. If it cannot fill that many it will just say sorry and show what it found.
+## Stack
+
+Django Python backend with MVC templates and a Django REST Framework API. React + Tailwind for the interactive UI. The Pitchfork and Rate Your Music engine lives in the Django app `backend/recommender/`.
+
+Spring Boot is not in this repo because that is a Java framework and this backend is Django/Python.
+
+## Project layout
+
+```
+frontend/                 React + Vite + Tailwind
+backend/config/           Django project settings and URLs
+backend/api/              REST API (views + serializer)
+backend/web/              MVC templates
+backend/recommender/      recommendation engine (agents, schemas, sources)
+```
 
 ## Run it on your machine
 
-Copy the example env file:
+### 1) Backend (Django)
 
 ```bash
 cd ~/music-taste-agents
 cp .env.example .env
+uv sync
+cd backend
+uv run python manage.py migrate
+uv run uvicorn config.asgi:application --reload --port 8787
 ```
 
-### With Gemini
+Django MVC pages:
+http://127.0.0.1:8787/
+http://127.0.0.1:8787/about/
 
-Get a key from Google AI Studio, put it in `.env` like this:
+REST API:
+http://127.0.0.1:8787/api/health
+POST http://127.0.0.1:8787/api/recommend
+
+### 2) Frontend (React + Tailwind)
+
+In another terminal:
+
+```bash
+cd ~/music-taste-agents/frontend
+npm install
+npm run dev
+```
+
+Open http://127.0.0.1:5173/app/
+
+### Env
+
+Gemini:
 
 ```
 LLM_PROVIDER=gemini
 GEMINI_API_KEY=your_key_here
-OPENAI_MODEL=gemini-2.0-flash
+OPENAI_MODEL=gemini-3.8-flash
 ```
 
-Then:
-
-```bash
-uv sync
-uv run uvicorn app.main:app --reload --port 8787
-```
-
-### With Ollama (fully local, no cloud key)
-
-```bash
-ollama pull llama3.2
-```
-
-In `.env`:
+Ollama:
 
 ```
 LLM_PROVIDER=ollama
 OPENAI_MODEL=llama3.2
 ```
 
-Open http://127.0.0.1:8787 in your browser.
-
 ## Docker
-
-Do not put secrets in the image. Pass them when you run it.
 
 ```bash
 docker build -t music-taste-agents .
@@ -57,20 +78,12 @@ docker build -t music-taste-agents .
 docker run --rm -p 8787:8787 \
   -e LLM_PROVIDER=gemini \
   -e GEMINI_API_KEY=your_key \
-  -e OPENAI_MODEL=gemini-2.0-flash \
+  -e OPENAI_MODEL=gemini-3.8-flash \
   music-taste-agents
 ```
 
-Then open http://127.0.0.1:8787
-
-If you host this somewhere later, set the same env vars as secrets and start with:
-
-```bash
-uvicorn app.main:app --host 0.0.0.0 --port $PORT
-```
-
-## How it works
-
-You hit `POST /api/recommend` with your taste, optional seed artists, and a limit. Pitchfork and Rate Your Music run in parallel. The app merges their picks and prefers artists that show up in more than one place.
+Then open:
+http://127.0.0.1:8787/ for the Django MVC home
+http://127.0.0.1:8787/app/ for the React UI
 
 Keep your `.env` private. Never commit API keys.

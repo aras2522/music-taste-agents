@@ -1,0 +1,175 @@
+:root {
+  --bg: #f6f1ea;
+  --ink: #1f1a17;
+  --muted: #6b5f57;
+  --accent: #8a4b2d;
+  --line: #d9cfc4;
+  --card: #fffaf4;
+  --font: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --display: "Fraunces", Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, #ffe7cf, transparent 40%),
+    linear-gradient(180deg, #f8f3ec, #efe6db);
+  min-height: 100vh;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.shell {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0 0 0.75rem;
+}
+
+.hero p,
+.hero li {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.meta {
+  font-size: 0.95rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fffaf6;
+  text-decoration: none;
+  padding: 0.8rem 1.2rem;
+  font-weight: 600;
+  border-radius: 0.35rem;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.form {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.form label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.form input,
+.form textarea {
+  font: inherit;
+  color: var(--ink);
+  background: #fffaf6;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  padding: 0.75rem;
+}
+
+.form input[name="limit"] {
+  width: 5rem;
+}
+
+.row {
+  display: flex;
+  align-items: end;
+  gap: 0.75rem;
+}
+
+.btn {
+  border: 0;
+  cursor: pointer;
+}
+
+.status {
+  min-height: 1.4rem;
+  margin-top: 1rem;
+}
+
+.status.error {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.shortfall {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--accent);
+  background: rgba(138, 75, 45, 0.1);
+  font-weight: 600;
+}
+
+.pick {
+  border-top: 1px solid var(--line);
+  padding-top: 0.9rem;
+  margin-top: 0.9rem;
+}
+
+.pick h3 {
+  font-family: var(--display);
+  margin: 0.2rem 0;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.links a {
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

@@ -1,0 +1,21 @@
+{% extends "web/base.html" %}
+
+{% block content %}
+<section class="hero">
+  <h1>{{ title }}</h1>
+  <p>
+    This page is rendered by Django templates using the MVC pattern
+    (Model / View / Controller style via Django views + templates).
+  </p>
+  <h2>Stack</h2>
+  <ul>
+    {% for item in stack %}
+      <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  <p>
+    Note: Spring Boot is a Java framework, so it is not part of this Python Django
+    backend. The REST API here is Django REST Framework instead.
+  </p>
+</section>
+{% endblock %}

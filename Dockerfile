@@ -1,9 +1,15 @@
-# Music Taste Agents — production image
+# Music Taste Agents — Django API + React static build
+FROM node:22-bookworm-slim AS frontend
+WORKDIR /frontend
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
+
 FROM python:3.12-slim
 
 WORKDIR /app
 
-# System deps for lxml / curl-cffi style packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         build-essential \
@@ -12,20 +18,24 @@ RUN apt-get update \
         curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv for reproducible dependency installs
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Dependency metadata first (better layer caching)
 COPY pyproject.toml README.md ./
-COPY app ./app
+COPY backend ./backend
+COPY --from=frontend /frontend/dist ./frontend/dist
 
 RUN uv pip install --system .
 
+WORKDIR /app/backend
+
 ENV PYTHONUNBUFFERED=1 \
     PORT=8787 \
-    LLM_PROVIDER=gemini
+    LLM_PROVIDER=gemini \
+    DJANGO_DEBUG=false \
+    DJANGO_ALLOWED_HOSTS=* \
+    PYTHONPATH=/app/backend
 
 EXPOSE 8787
 
-# Pass secrets at runtime: -e GEMINI_API_KEY=...  (never bake keys into the image)
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
+# Pass secrets at runtime: -e GEMINI_API_KEY=...
+CMD ["sh", "-c", "python manage.py migrate --noinput && uvicorn config.asgi:application --host 0.0.0.0 --port ${PORT}"]

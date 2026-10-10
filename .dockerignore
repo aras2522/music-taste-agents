@@ -17,3 +17,7 @@ build/
 !README.md
 .cursor/
 agent-transcripts/
+node_modules/
+frontend/dist/
+backend/db.sqlite3
+backend/staticfiles/
