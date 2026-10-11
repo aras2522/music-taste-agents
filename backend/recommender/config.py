@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     openai_model: str = ""
     openai_base_url: str | None = None
-    request_timeout_s: float = 25.0
+    request_timeout_s: float = 50.0
     max_tool_rounds: int = 2
     recommendations_per_agent: int = 12
 

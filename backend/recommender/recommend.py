@@ -21,7 +21,7 @@ async def recommend(req: TasteRequest) -> RecommendResponse:
                 run_pitchfork_agent(req.taste, req.artists, per_agent),
                 run_rym_agent(req.taste, req.artists, per_agent),
             ),
-            timeout=70,
+            timeout=110,
         )
     except asyncio.TimeoutError:
         return RecommendResponse(

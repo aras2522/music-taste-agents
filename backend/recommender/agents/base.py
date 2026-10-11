@@ -11,7 +11,7 @@ from recommender.agents.seeds import extract_seeds, is_seed_artist
 from recommender.agents.synthesizer import _norm_name, is_usable_pick
 from recommender.config import settings
 from recommender.lanes import is_punk_lane, lane_mismatch
-from recommender.llm import get_client
+from recommender.llm import chat_kwargs, get_client
 from recommender.schemas import AgentResult, SourcePick
 from recommender.search_sites import gather_source_evidence
 from recommender.tools import fetch_page, web_search
@@ -362,6 +362,7 @@ EVIDENCE FROM {allowed_site}:
             {"role": "user", "content": user},
         ],
         temperature=0.2,
+        **chat_kwargs(),
     )
     content = response.choices[0].message.content or ""
     try:
@@ -377,6 +378,7 @@ EVIDENCE FROM {allowed_site}:
     except Exception:
         retry = await client.chat.completions.create(
             model=settings.resolved_model,
+            **chat_kwargs(),
             messages=[
                 {"role": "system", "content": "Return ONLY the picks JSON object. No tool calls."},
                 {
@@ -462,7 +464,9 @@ async def run_source_agent(
     artists = artists or []
     seeds = extract_seeds(taste or user_prompt, artists)
 
-    if settings.llm_provider == "ollama":
+    # One evidence-backed reply. The tool loop asks Gemini several times and
+    # each thinking pass can exceed the request timeout.
+    if settings.llm_provider in {"ollama", "gemini"}:
         try:
             return await _run_ollama_agent(
                 source=source,
@@ -474,13 +478,20 @@ async def run_source_agent(
             )
         except AuthenticationError:
             return AgentResult(source=source, picks=[], notes="", error="ollama rejected request")
+        except APITimeoutError:
+            return AgentResult(
+                source=source,
+                picks=[],
+                notes="",
+                error=f"{settings.llm_provider} took too long to answer. Try again.",
+            )
         except APIConnectionError as exc:
             cause = f" ({exc.__cause__})" if exc.__cause__ else ""
             return AgentResult(
                 source=source,
                 picks=[],
                 notes="",
-                error=f"Could not reach ollama{cause}",
+                error=f"Could not reach {settings.llm_provider}{cause}",
             )
         except Exception as exc:  # noqa: BLE001
             return AgentResult(source=source, picks=[], notes="", error=str(exc))

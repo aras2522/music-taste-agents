@@ -19,3 +19,10 @@ def get_client() -> AsyncOpenAI:
     if settings.resolved_base_url:
         kwargs["base_url"] = settings.resolved_base_url
     return AsyncOpenAI(**kwargs)
+
+
+def chat_kwargs() -> dict:
+    """Gemini 3 spends a long time in thinking mode. Keep replies short enough to return."""
+    if settings.llm_provider == "gemini":
+        return {"reasoning_effort": "low"}
+    return {}

@@ -8,7 +8,7 @@ from openai.types.chat import ChatCompletionMessageParam
 from recommender.agents.seeds import extract_seeds, is_seed_artist
 from recommender.config import settings
 from recommender.lanes import lane_mismatch
-from recommender.llm import get_client
+from recommender.llm import chat_kwargs, get_client
 from recommender.schemas import AgentResult, MergedRecommendation, SourcePick
 
 _BAD_NAMES = {
@@ -342,6 +342,7 @@ Only include URLs that appeared in the agent picks. Omit missing url keys.
             model=settings.resolved_model,
             messages=messages,
             temperature=0.2,
+            **chat_kwargs(),
         )
         content = response.choices[0].message.content or ""
         text = content.strip()

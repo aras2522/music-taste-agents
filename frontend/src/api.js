@@ -14,7 +14,7 @@ export async function recommendMusic({ taste, artists, limit }) {
     res = await fetch(`${API_BASE}/api/recommend?_=${Date.now()}`, {
       method: "POST",
       cache: "no-store",
-      signal: AbortSignal.timeout(90000),
+      signal: AbortSignal.timeout(120000),
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-cache",
